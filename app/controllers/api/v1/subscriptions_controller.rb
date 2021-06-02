@@ -2,7 +2,8 @@ class Api::V1::SubscriptionsController < ApplicationController
 
   def create
     @subscription = Subscription.new(subscription_params)
-    if @subscription.save!
+    
+    if @subscription.save
       render json: SubscriptionSerializer.new(@subscription), status: :created
     else
       render json: { error: @subscription.errors.full_messages.to_sentence }, status: :bad_request
