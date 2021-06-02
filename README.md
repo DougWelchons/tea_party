@@ -122,7 +122,7 @@ alternatively you can run `rails db:{drop,create,migrate}` to set up the databas
 #### Tests for each endpoint
 ##### New Subscription endpoint
 - happy path testing includes:
-  -
+  - 
 - Edge case & Sad path testing includes:
   -
 
@@ -136,4 +136,4 @@ alternatively you can run `rails db:{drop,create,migrate}` to set up the databas
 - happy path testing includes:
   -
 - Edge case & Sad path testing includes:
-  - 
+  -
