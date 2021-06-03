@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "PUT api/v1/subscriptions" do
   describe "happy Path" do
-    it "returns the updated subscription with all relivent data" do
+    it "returns the updated subscription with all relevant data" do
       @customer = Customer.create!(first_name: "John", last_name: "Smith", email: "email@domain.com", address: "123 ABC St.")
       @tea = Tea.create!(title: "Mint Madness", description: "All the Mint!", temperature: "212F", brew_time: "3 - 5  minutes")
       @subscription = Subscription.create!(title: "Mint Monthly", price: 25.99, frequency: 2, customer_id: @customer.id, tea_id: @tea.id)
