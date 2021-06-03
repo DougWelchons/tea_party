@@ -38,7 +38,6 @@ RSpec.describe "POST api/v1/subscriptions" do
 
   describe "Sad Path and Edge Case" do
     it "returns a 400 error if no body is provided" do
-
       headers = {"CONTENT_TYPE" => "application/json",
                  "ACCEPT"       => "application/json"}
 
@@ -49,6 +48,27 @@ RSpec.describe "POST api/v1/subscriptions" do
       expect(response).to_not be_successful
       expect(response.status).to eq(400)
       expect(body).to eq({error: "Customer must exist, Tea must exist, Title can't be blank, Price can't be blank, Price is not a number, and Frequency can't be blank"})
+    end
+
+    it "returns a 400 error if all required information is not provided" do
+      @customer = Customer.create!(first_name: "John", last_name: "Smith", email: "email@domain.com", address: "123 ABC St.")
+      @tea = Tea.create!(title: "Mint Madness", description: "All the Mint!", temperature: "212F", brew_time: "3 - 5  minutes")
+
+      subscription_params = { title: "Mint Monthly",
+                              frequency: 2,
+                              customer_id: @customer.id,
+                              tea_id: @tea.id}
+
+      headers = {"CONTENT_TYPE" => "application/json",
+                 "ACCEPT"       => "application/json"}
+
+      post '/api/v1/subscriptions', headers: headers, params: subscription_params.to_json
+
+      body = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(400)
+      expect(body).to eq({error: "Price can't be blank and Price is not a number"})
     end
   end
 end
