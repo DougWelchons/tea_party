@@ -59,8 +59,8 @@ alternatively you can run `rails db:{drop,create,migrate}` to set up the databas
 
   - example requests:
     - POST http://localhost:3000/api/v1/subscriptions
-      Content-Type: application/json
-      Accept: application/json
+    - Content-Type: application/json
+    - Accept: application/json
       ```
       body:
             {
