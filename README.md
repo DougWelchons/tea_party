@@ -13,20 +13,24 @@ This project was tested with:
 * RSpec version 3.10
 
 #### Contents
-- [program setup](#program-setup)
-- [Endpoint documentation](#endpoint-documentation)
+- [Database schema](#database_schema)
+- [Program setup](#program_setup)
+- [Endpoint documentation](#endpoint_documentation)
   - [New Subscription](#new_subscription)
-  - [Cancel Subscription](#cancel_subscription)
+  - [Update Subscription](#update_subscription)
   - [Customer Subscriptions](#customer_subscriptions)
 
 - [Testing](#testing)
   - [Running tests](#running-tests)
   - [Tests for each endpoint](#tests-for-each-endpont)
     - [New Subscription](#new_subscription_endpoint)
-    - [Cancel Subscription](#cancel_subscription_endpoint)
+    - [Update Subscription](#update_subscription_endpoint)
     - [Customer Subscriptions](#customer_subscriptions_endpoint)
 
-### program setup
+### Database schema
+![database-schema](https://user-images.githubusercontent.com/72056427/120692132-9a557e80-c464-11eb-8550-ab2caa6cd0bc.png)
+
+### Program setup
 To run the program on you own machine follow these setup steps:
 ```
 $ git clone git@github.com:DougWelchons/tea_party.git
@@ -46,6 +50,13 @@ alternatively you can run `rails db:{drop,create,migrate}` to set up the databas
 
 #### New Subscription
 - This endpoint creates a new subscription for the corresponding customer and returns the subscription
+  - required params (in the body)
+    - customer_id
+    - tea_id
+    - title
+    - price
+    - frequency
+
   - example requests:
     - POST http://localhost:3000/api/v1/subscriptions
       Content-Type: application/json
@@ -79,10 +90,13 @@ alternatively you can run `rails db:{drop,create,migrate}` to set up the databas
   }
   ```
 
-#### Cancel Subscription
-- This endpoint changes the status of a subscription to "cancelled".
+#### Update Subscription
+- This endpoint changes the status of a subscription
+  - required params
+    - status=<new_status> (new_status must be active or canceled)
+
   - example request:
-    - PUT http://localhost:3000/api/v1/subscriptions/:id?status="cancelled"
+    - PUT http://localhost:3000/api/v1/subscriptions/:id?status=canceled
 
   - example response:
   ```
@@ -96,20 +110,81 @@ alternatively you can run `rails db:{drop,create,migrate}` to set up the databas
         title: "Mint Tea Monthly",
         price: 25.99,
         frequency: "monthly"
-        status: "cancelled"
+        status: "canceled"
       }
     }
   }
   ```
 
 #### Customer Subscriptions
-- This endpoint returns all of the customers subscriptions (active and cancelled)
+- This endpoint returns all of the customers subscriptions (active and canceled)
+  - Optional params
+    - status=active - returns only the active subscriptions
+    - status=canceled - returns only the canceled subscriptions
   - example requests:
-    - http://localhost:3000/api/v1/customers/:id/subscriptions
+    - http://localhost:3000/api/v1/customers/:customer_id/subscriptions
+    - http://localhost:3000/api/v1/customers/:customer_id/subscriptions?status=canceled
 
-  - example response:
+  - example response 1:
+  ```
+  "data": [
+         {
+             "id": "1",
+             "type": "subscription",
+             "attributes": {
+                 "title": "Mint Monthly",
+                 "price": 25.99,
+                 "status": "active",
+                 "frequency": "monthly",
+                 "customer_id": 1,
+                 "tea_id": 1
+             }
+         },
+         {
+             "id": "2",
+             "type": "subscription",
+             "attributes": {
+                 "title": "Weekly Mint",
+                 "price": 25.99,
+                 "status": "active",
+                 "frequency": "weekly",
+                 "customer_id": 1,
+                 "tea_id": 1
+             }
+         },
+         {
+             "id": "3",
+             "type": "subscription",
+             "attributes": {
+                 "title": "Twice Mint",
+                 "price": 25.99,
+                 "status": "canceled",
+                 "frequency": "biweekly",
+                 "customer_id": 1,
+                 "tea_id": 1
+             }
+         }
+     ]
+ }
   ```
 
+  - example response 2:
+  ```
+  "data": [
+         {
+             "id": "3",
+             "type": "subscription",
+             "attributes": {
+                 "title": "Twice Mint",
+                 "price": 25.99,
+                 "status": "canceled",
+                 "frequency": "biweekly",
+                 "customer_id": 1,
+                 "tea_id": 1
+             }
+         }
+     ]
+ }
   ```
 
 ### Testing
@@ -122,18 +197,27 @@ alternatively you can run `rails db:{drop,create,migrate}` to set up the databas
 #### Tests for each endpoint
 ##### New Subscription endpoint
 - happy path testing includes:
-  - 
+  - Endpoint returns a new subscription with all relevant data
 - Edge case & Sad path testing includes:
-  -
+  - Endpoint returns a 400 error if no body is provided
+  - Endpoint returns a 400 error if all required information is not provided
 
-##### Cancel Subscription endpoint
+##### Update Subscription endpoint
 - happy path testing includes:
-  -
+  - Endpoint returns the updated subscription with all relevant data
 - Edge case & Sad path testing includes:
-  -
+  - Endpoint returns a 400 error if no status is provided
+  - Endpoint returns a 400 error if the status is blank
+  - Endpoint returns a 400 error if the status is not canceled or active
+  - Endpoint returns a 404 error if the subscription does not exist
 
 ##### Customer Subscriptions endpoint
 - happy path testing includes:
-  -
+  - Endpoint returns all of a customers active and canceled subscriptions by default
+  - Endpoint returns an empty array if customer has no subscriptions
+  - Endpoint returns only the active subscriptions if the status param equals active
+  - Endpoint returns only the canceled subscriptions if the status param equals canceled
+  - Endpoint returns all of the subscriptions if the status param is blank
 - Edge case & Sad path testing includes:
-  -
+  - Endpoint returns a 404 error if the customer does not exist
+  - Endpoint returns a 400 error if the status param not a valid status
