@@ -127,7 +127,8 @@ alternatively you can run `rails db:{drop,create,migrate}` to set up the databas
 
   - example response 1:
   ```
-  "data": [
+  {
+    "data": [
          {
              "id": "1",
              "type": "subscription",
