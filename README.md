@@ -166,7 +166,7 @@ alternatively you can run `rails db:{drop,create,migrate}` to set up the databas
          }
      ]
  }
-  ```
+ ```
 
   - example response 2:
   
