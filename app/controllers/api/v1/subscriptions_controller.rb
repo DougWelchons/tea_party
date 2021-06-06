@@ -9,7 +9,7 @@ class Api::V1::SubscriptionsController < ApplicationController
       subscriptions = @customer.subscriptions.canceled
       render json: SubscriptionSerializer.new(subscriptions), status: :ok
     elsif (params[:status] && params[:status] != "")
-      render json: { error: "status can only be canceled or active" }, status: :bad_request
+      invalid_status
     else
       render json: SubscriptionSerializer.new(@customer.subscriptions), status: :ok
     end
@@ -21,7 +21,7 @@ class Api::V1::SubscriptionsController < ApplicationController
     if @subscription.save
       render json: SubscriptionSerializer.new(@subscription), status: :created
     else
-      render json: { error: @subscription.errors.full_messages.to_sentence }, status: :bad_request
+      invalid_subscription
     end
   end
 
@@ -31,7 +31,7 @@ class Api::V1::SubscriptionsController < ApplicationController
       @subscription.status = params[:status]
       render json: SubscriptionSerializer.new(@subscription), status: :ok
     else
-      render json: { error: "status can only updated to canceled or active" }, status: :bad_request
+      invalid_status
     end
   end
 

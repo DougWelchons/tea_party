@@ -41,7 +41,7 @@ RSpec.describe "PUT api/v1/subscriptions" do
 
       expect(response).to_not be_successful
       expect(response.status).to eq(400)
-      expect(body).to eq({error: "status can only updated to canceled or active"})
+      expect(body).to eq({error: "status can only be canceled or active"})
     end
 
     it "returns a 400 error if the status is blank" do
@@ -55,7 +55,7 @@ RSpec.describe "PUT api/v1/subscriptions" do
 
       expect(response).to_not be_successful
       expect(response.status).to eq(400)
-      expect(body).to eq({error: "status can only updated to canceled or active"})
+      expect(body).to eq({error: "status can only be canceled or active"})
     end
 
     it "returns a 400 error if the status is not canceled or active" do
@@ -69,7 +69,7 @@ RSpec.describe "PUT api/v1/subscriptions" do
 
       expect(response).to_not be_successful
       expect(response.status).to eq(400)
-      expect(body).to eq({error: "status can only updated to canceled or active"})
+      expect(body).to eq({error: "status can only be canceled or active"})
     end
 
     it "returns a 404 error if the subscription does not exist" do
